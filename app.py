@@ -16,6 +16,8 @@ st.caption("AI-based preliminary health risk prediction")
 age = st.number_input("Age", min_value=1, max_value=120)
 bp = st.number_input("Blood Pressure")
 chol = st.number_input("Cholesterol Level")
+bmi = st.number_input("BMI", min_value=0.0, max_value=50.0, value=22.0)
+
 
 if st.button("Predict Risk"):
     input_data = np.array([[age, bp, chol]])
