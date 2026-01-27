@@ -5,24 +5,45 @@ import numpy as np
 st.set_page_config(page_title="Health Risk Analysis", layout="centered")
 
 # Load model
-with open("health_risk_model.pkl", "rb") as f:
-    model = pickle.load(f)
+st.set_page_config(
+    page_title="Health Risk Analysis System",
+    page_icon="🩺",
+    layout="centered"
+)
 
-st.title("🩺 Health Risk Analysis System")
-st.write("AI-based preliminary health risk prediction")
+st.markdown(
+    """
+    <h1 style='text-align: center;'>🩺 Health Risk Analysis System</h1>
+    <p style='text-align: center; color: grey;'>
+    AI-based preliminary health risk prediction
+    </p>
+    """,
+    unsafe_allow_html=True
+)
 
-# Inputs
-age = st.number_input("Age", min_value=1, max_value=120, value=30)
-bp = st.number_input("Blood Pressure", min_value=50.0, max_value=200.0, value=120.0)
-chol = st.number_input("Cholesterol Level", min_value=100.0, max_value=400.0, value=180.0)
-bmi = st.number_input("BMI", min_value=10.0, max_value=50.0, value=22.0)
+st.divider()
 
-# Prediction
-if st.button("Predict Risk"):
-    input_data = np.array([[age, bp, chol, bmi]])  # 🔥 4 FEATURES
+st.subheader("📋 Enter Patient Details")
+
+age = st.number_input("Age (years)", min_value=1, max_value=120, step=1)
+bp = st.number_input("Blood Pressure (mmHg)", min_value=50, max_value=250)
+chol = st.number_input("Cholesterol Level (mg/dL)", min_value=100, max_value=400)
+bmi = st.number_input("BMI", min_value=10.0, max_value=50.0)
+
+st.divider()
+
+if st.button("🔍 Predict Health Risk"):
+    input_data = np.array([[age, bp, chol, bmi]])
     prediction = model.predict(input_data)[0]
 
+    st.subheader("📊 Prediction Result")
+
     if prediction == 1:
-        st.error("⚠️ High Health Risk Detected")
+        st.error("🚨 **High Health Risk Detected**")
+        st.info("Please consult a healthcare professional.")
     else:
-        st.success("✅ Low Health Risk")
+        st.success("✅ **Low Health Risk**")
+        st.info("Maintain a healthy lifestyle.")
+
+st.divider()
+st.caption("⚠️ For educational purposes only. Not a medical diagnosis.")
