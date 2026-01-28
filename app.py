@@ -1,6 +1,11 @@
 import streamlit as st
 import pickle
-import numpy as np
+import numpy as n
+
+# Load trained model
+with open("health_risk_model.pkl", "rb") as f:
+    model = pickle.load(f)
+
 
 st.set_page_config(page_title="Health Risk Analysis", layout="centered")
 
