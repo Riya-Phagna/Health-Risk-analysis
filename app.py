@@ -2,6 +2,33 @@ import streamlit as st
 import pickle
 import numpy as np
 
+st.markdown("""
+<style>
+body {
+    background-color: #f5f7fb;
+    font-family: 'Segoe UI', sans-serif;
+}
+.main {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 12px;
+}
+h1, h2, h3 {
+    color: #1f2c56;
+}
+.stButton > button {
+    background-color: #4CAF50;
+    color: white;
+    border-radius: 8px;
+    height: 45px;
+    width: 100%;
+    font-size: 16px;
+}
+</style>
+""", unsafe_allow_html=True)
+
+
+
 # Load model
 st.set_page_config(
     page_title="Health Risk Analysis System",
@@ -12,25 +39,29 @@ st.set_page_config(
 with open("health_risk_model.pkl", "rb") as f:
     model = pickle.load(f)
 
-st.title("🫀 Health Risk Analysis System")
-st.caption("AI-powered health risk prediction using Decision Tree")
+st.markdown("""
+<div style="text-align:center">
+    <h1>🩺 Health Risk Analysis System</h1>
+    <p style="font-size:17px;color:gray;">
+        AI-powered health risk prediction using Machine Learning
+    </p>
+</div>
+""", unsafe_allow_html=True)
 
-st.markdown("---")
 
 # Input Card
-st.subheader("📋 Enter Patient Details")
+st.markdown("### 🧾 Enter Patient Details")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    age = st.number_input("Age (years)", min_value=1, max_value=120, value=30)
-    bp = st.number_input("Blood Pressure (mmHg)", min_value=50, max_value=200, value=120)
+    age = st.slider("Age (years)", 1, 100, 30)
+    bp = st.slider("Blood Pressure (mmHg)", 50, 200, 120)
 
 with col2:
-    chol = st.number_input("Cholesterol Level (mg/dL)", min_value=100, max_value=400, value=180)
-    bmi = st.number_input("BMI", min_value=10.0, max_value=50.0, value=22.5)
+    chol = st.slider("Cholesterol (mg/dL)", 100, 350, 180)
+    bmi = st.slider("BMI", 10.0, 45.0, 22.0)
 
-st.markdown("---")
 
 # Predict Button (Centered)
 predict = st.button("🔍 Predict Health Risk", use_container_width=True)
