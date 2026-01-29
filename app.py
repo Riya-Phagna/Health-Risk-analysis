@@ -83,24 +83,61 @@ if predict:
             "🎉 **Good news!** Maintain a healthy lifestyle and regular checkups."
         )
 
-st.markdown("---")
-def health_suggestions(age, bp, chol, bmi):
-    tips = []
+st.markdown("### 🧠 Evidence-Based Health Guidance")
 
-    if bp > 130:
-        tips.append("• Blood pressure is high. Reduce salt intake and manage stress.")
+tips = research_based_suggestions(age, bp, chol, bmi)
 
-    if chol > 200:
-        tips.append("• Cholesterol level is elevated. Prefer low-fat and high-fiber diet.")
+for t in tips:
+    st.write(t)
 
-    if bmi >= 25:
-        tips.append("• BMI indicates overweight. Regular exercise is recommended.")
+def research_based_suggestions(age, bp, chol, bmi):
+    advice = []
 
-    if bmi < 18.5:
-        tips.append("• BMI indicates underweight. Nutritional improvement is advised.")
+    # Blood Pressure — AHA
+    if bp >= 130:
+        advice.append(
+            "• Blood pressure is in the hypertensive range. "
+            "According to the American Heart Association, regular exercise, "
+            "reduced sodium intake, and stress management are recommended."
+        )
+    elif bp >= 120:
+        advice.append(
+            "• Blood pressure is slightly elevated. Monitoring and lifestyle control are advised."
+        )
 
-    if not tips:
-        tips.append("• All health indicators are within normal range. Maintain your lifestyle.")
+    # Cholesterol — NIH
+    if chol >= 240:
+        advice.append(
+            "• Cholesterol level is high. NIH guidelines suggest limiting saturated fats "
+            "and increasing fiber intake."
+        )
+    elif chol >= 200:
+        advice.append(
+            "• Cholesterol is borderline high. Dietary monitoring is recommended."
+        )
+
+    # BMI — WHO
+    if bmi >= 30:
+        advice.append(
+            "• BMI falls under obesity category (WHO). Weight reduction through diet "
+            "and physical activity is advised."
+        )
+    elif bmi >= 25:
+        advice.append(
+            "• BMI indicates overweight. Regular aerobic activity is recommended."
+        )
+    elif bmi < 18.5:
+        advice.append(
+            "• BMI indicates underweight. Nutritional improvement may be required."
+        )
+
+    # Normal
+    if not advice:
+        advice.append(
+            "• All health indicators are within normal limits according to WHO and AHA guidelines."
+        )
+
+    return advice
 
     return tips
 
