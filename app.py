@@ -139,7 +139,7 @@ def research_based_suggestions(age, bp, chol, bmi):
 
     return advice
 
-    return tips
+    
 
 
 # Footer / Disclaimer
