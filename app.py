@@ -84,6 +84,26 @@ if predict:
         )
 
 st.markdown("---")
+def health_suggestions(age, bp, chol, bmi):
+    tips = []
+
+    if bp > 130:
+        tips.append("• Blood pressure is high. Reduce salt intake and manage stress.")
+
+    if chol > 200:
+        tips.append("• Cholesterol level is elevated. Prefer low-fat and high-fiber diet.")
+
+    if bmi >= 25:
+        tips.append("• BMI indicates overweight. Regular exercise is recommended.")
+
+    if bmi < 18.5:
+        tips.append("• BMI indicates underweight. Nutritional improvement is advised.")
+
+    if not tips:
+        tips.append("• All health indicators are within normal range. Maintain your lifestyle.")
+
+    return tips
+
 
 # Footer / Disclaimer
 st.caption(
