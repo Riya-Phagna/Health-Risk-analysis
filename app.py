@@ -1,6 +1,51 @@
 import streamlit as st
 import pickle
 import numpy as np
+def research_based_suggestions(age, bp, chol, bmi):
+    tips = []
+
+    # Blood Pressure — AHA (American Heart Association)
+    if bp >= 130:
+        tips.append(
+            "🔹 High blood pressure detected. Research by the American Heart Association recommends reducing salt intake, exercising 30 minutes daily, and managing stress."
+        )
+    else:
+        tips.append(
+            "✅ Blood pressure is within a healthy range. Maintain regular exercise and low sodium intake."
+        )
+
+    # Cholesterol — NIH & WHO
+    if chol >= 200:
+        tips.append(
+            "🔹 High cholesterol level. According to NIH studies, reducing saturated fat, avoiding fried food, and increasing fiber intake can lower cholesterol."
+        )
+    else:
+        tips.append(
+            "✅ Cholesterol level is acceptable. Continue balanced nutrition and routine monitoring."
+        )
+
+    # BMI — WHO classification
+    if bmi >= 25:
+        tips.append(
+            "🔹 BMI indicates overweight. WHO research suggests weight reduction of 5–10% significantly lowers heart disease risk."
+        )
+    elif bmi < 18.5:
+        tips.append(
+            "🔹 BMI indicates underweight. Increase protein intake and consult a nutritionist."
+        )
+    else:
+        tips.append(
+            "✅ BMI is in the healthy range. Maintain current lifestyle."
+        )
+
+    # Age-based advice — CDC
+    if age >= 40:
+        tips.append(
+            "🔹 Age above 40 increases cardiovascular risk. CDC recommends annual health screening and regular lipid profile tests."
+        )
+
+    return tips
+
 
 st.markdown("""
 <style>
