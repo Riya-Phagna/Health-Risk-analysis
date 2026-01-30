@@ -1,193 +1,147 @@
 import streamlit as st
-import pickle
 import numpy as np
-def research_based_suggestions(age, bp, chol, bmi):
-    tips = []
+import joblib
 
-    # Blood Pressure — AHA (American Heart Association)
-    if bp >= 130:
-        tips.append(
-            "🔹 High blood pressure detected. Research by the American Heart Association recommends reducing salt intake, exercising 30 minutes daily, and managing stress."
-        )
-    else:
-        tips.append(
-            "✅ Blood pressure is within a healthy range. Maintain regular exercise and low sodium intake."
-        )
-
-    # Cholesterol — NIH & WHO
-    if chol >= 200:
-        tips.append(
-            "🔹 High cholesterol level. According to NIH studies, reducing saturated fat, avoiding fried food, and increasing fiber intake can lower cholesterol."
-        )
-    else:
-        tips.append(
-            "✅ Cholesterol level is acceptable. Continue balanced nutrition and routine monitoring."
-        )
-
-    # BMI — WHO classification
-    if bmi >= 25:
-        tips.append(
-            "🔹 BMI indicates overweight. WHO research suggests weight reduction of 5–10% significantly lowers heart disease risk."
-        )
-    elif bmi < 18.5:
-        tips.append(
-            "🔹 BMI indicates underweight. Increase protein intake and consult a nutritionist."
-        )
-    else:
-        tips.append(
-            "✅ BMI is in the healthy range. Maintain current lifestyle."
-        )
-
-    # Age-based advice — CDC
-    if age >= 40:
-        tips.append(
-            "🔹 Age above 40 increases cardiovascular risk. CDC recommends annual health screening and regular lipid profile tests."
-        )
-
-    return tips
-
-
-st.markdown("""
-<style>
-body {
-    background-color: #f5f7fb;
-    font-family: 'Segoe UI', sans-serif;
-}
-.main {
-    background-color: #ffffff;
-    padding: 30px;
-    border-radius: 12px;
-}
-h1, h2, h3 {
-    color: #1f2c56;
-}
-.stButton > button {
-    background-color: #4CAF50;
-    color: white;
-    border-radius: 8px;
-    height: 45px;
-    width: 100%;
-    font-size: 16px;
-}
-</style>
-""", unsafe_allow_html=True)
-
-
-
-# Load model
+# -------------------- PAGE CONFIG --------------------
 st.set_page_config(
     page_title="Health Risk Analysis System",
     page_icon="🩺",
     layout="centered"
 )
-# Load trained model
-with open("health_risk_model.pkl", "rb") as f:
-    model = pickle.load(f)
 
+# -------------------- CUSTOM CSS --------------------
 st.markdown("""
-<div style="text-align:center">
-    <h1>🩺 Health Risk Analysis System</h1>
-    <p style="font-size:17px;color:gray;">
-        AI-powered health risk prediction using Machine Learning
-    </p>
-</div>
+<style>
+    body {
+        background-color: #f7f9fc;
+    }
+
+    .main-title {
+        text-align: center;
+        font-size: 40px;
+        font-weight: 700;
+        color: #1f2937;
+    }
+
+    .subtitle {
+        text-align: center;
+        font-size: 18px;
+        color: #6b7280;
+        margin-bottom: 30px;
+    }
+
+    .card {
+        background-color: white;
+        padding: 25px;
+        border-radius: 15px;
+        box-shadow: 0px 4px 20px rgba(0,0,0,0.08);
+        margin-bottom: 25px;
+    }
+
+    .risk-high {
+        background-color: #fee2e2;
+        color: #991b1b;
+        padding: 20px;
+        border-radius: 12px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .risk-low {
+        background-color: #dcfce7;
+        color: #065f46;
+        padding: 20px;
+        border-radius: 12px;
+        font-size: 20px;
+        font-weight: bold;
+    }
+
+    .tip-box {
+        background-color: #f0f9ff;
+        padding: 18px;
+        border-left: 6px solid #0284c7;
+        border-radius: 10px;
+        margin-bottom: 12px;
+        font-size: 16px;
+    }
+</style>
 """, unsafe_allow_html=True)
 
+# -------------------- LOAD MODEL --------------------
+model = joblib.load("model.pkl")
 
-# Input Card
-st.markdown("### 🧾 Enter Patient Details")
+# -------------------- TITLE --------------------
+st.markdown("<div class='main-title'>🩺 Health Risk Analysis System</div>", unsafe_allow_html=True)
+st.markdown("<div class='subtitle'>AI-powered health risk prediction using Machine Learning</div>", unsafe_allow_html=True)
 
-col1, col2 = st.columns(2)
+# -------------------- INPUT CARD --------------------
+st.markdown("<div class='card'>", unsafe_allow_html=True)
+st.subheader("📋 Enter Patient Details")
 
-with col1:
-    age = st.slider("Age (years)", 1, 100, 30)
-    bp = st.slider("Blood Pressure (mmHg)", 50, 200, 120)
+age = st.slider("Age (years)", 1, 100, 30)
+bp = st.slider("Blood Pressure (mmHg)", 60, 200, 120)
+chol = st.slider("Cholesterol (mg/dL)", 100, 350, 200)
+bmi = st.slider("BMI", 10.0, 45.0, 24.0)
 
-with col2:
-    chol = st.slider("Cholesterol (mg/dL)", 100, 350, 180)
-    bmi = st.slider("BMI", 10.0, 45.0, 22.0)
+st.markdown("</div>", unsafe_allow_html=True)
 
+# -------------------- PREDICTION --------------------
+if st.button("🔍 Predict Health Risk", use_container_width=True):
 
-# Predict Button (Centered)
-predict = st.button("🔍 Predict Health Risk", use_container_width=True)
-
-if predict:
     input_data = np.array([[age, bp, chol, bmi]])
     prediction = model.predict(input_data)[0]
 
+    # Probability
+    prob = model.predict_proba(input_data)[0]
+    risk_percent = int(max(prob) * 100)
+
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
     st.subheader("📊 Prediction Result")
 
+    st.progress(risk_percent)
+
     if prediction == 1:
-        st.error("🚨 **High Health Risk Detected**")
         st.markdown(
-            "⚠️ **Recommendation:** Please consult a healthcare professional immediately."
+            f"<div class='risk-high'>🚨 High Health Risk Detected ({risk_percent}%)</div>",
+            unsafe_allow_html=True
         )
     else:
-        st.success("✅ **Low Health Risk Detected**")
         st.markdown(
-            "🎉 **Good news!** Maintain a healthy lifestyle and regular checkups."
+            f"<div class='risk-low'>✅ Low Health Risk ({risk_percent}%)</div>",
+            unsafe_allow_html=True
         )
 
-st.markdown("### 🧠 Evidence-Based Health Guidance")
+    st.markdown("</div>", unsafe_allow_html=True)
 
-tips = research_based_suggestions(age, bp, chol, bmi)
+    # -------------------- HEALTH GUIDANCE --------------------
+    st.markdown("<div class='card'>", unsafe_allow_html=True)
+    st.subheader("🧠 Evidence-Based Health Guidance")
 
-for t in tips:
-    st.write(t)
+    tips = []
 
-def research_based_suggestions(age, bp, chol, bmi):
-    advice = []
+    if bp > 130:
+        tips.append("🫀 Reduce salt intake and monitor blood pressure regularly.")
 
-    # Blood Pressure — AHA
-    if bp >= 130:
-        advice.append(
-            "• Blood pressure is in the hypertensive range. "
-            "According to the American Heart Association, regular exercise, "
-            "reduced sodium intake, and stress management are recommended."
-        )
-    elif bp >= 120:
-        advice.append(
-            "• Blood pressure is slightly elevated. Monitoring and lifestyle control are advised."
-        )
+    if chol > 200:
+        tips.append("🥗 Follow a low-cholesterol diet (less fried food, more fiber).")
 
-    # Cholesterol — NIH
-    if chol >= 240:
-        advice.append(
-            "• Cholesterol level is high. NIH guidelines suggest limiting saturated fats "
-            "and increasing fiber intake."
-        )
-    elif chol >= 200:
-        advice.append(
-            "• Cholesterol is borderline high. Dietary monitoring is recommended."
-        )
+    if bmi > 25:
+        tips.append("🏃 Aim for at least 30 minutes of exercise daily.")
 
-    # BMI — WHO
-    if bmi >= 30:
-        advice.append(
-            "• BMI falls under obesity category (WHO). Weight reduction through diet "
-            "and physical activity is advised."
-        )
-    elif bmi >= 25:
-        advice.append(
-            "• BMI indicates overweight. Regular aerobic activity is recommended."
-        )
-    elif bmi < 18.5:
-        advice.append(
-            "• BMI indicates underweight. Nutritional improvement may be required."
-        )
+    if age > 45:
+        tips.append("🩺 Schedule routine health checkups every 6 months.")
 
-    # Normal
-    if not advice:
-        advice.append(
-            "• All health indicators are within normal limits according to WHO and AHA guidelines."
-        )
+    tips.append("💤 Maintain 7–8 hours of quality sleep.")
+    tips.append("🚭 Avoid smoking and limit alcohol consumption.")
+    tips.append("💧 Drink adequate water daily.")
 
-    return advice
+    for tip in tips:
+        st.markdown(f"<div class='tip-box'>{tip}</div>", unsafe_allow_html=True)
 
-    
+    st.markdown("</div>", unsafe_allow_html=True)
 
-
-# Footer / Disclaimer
-st.caption(
-    "⚕️ *Disclaimer: This tool is for educational purposes only and should not replace professional medical advice.*"
+# -------------------- FOOTER --------------------
+st.markdown(
+    "<hr><center style='color:gray;'>Developed by Riya Phagna • Streamlit ML Health App</center>",
+    unsafe_allow_html=True
 )
