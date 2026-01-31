@@ -148,32 +148,20 @@ st.markdown("---")
 
 
 # -------------------- PREDICTION --------------------
-if st.button("🔍 Predict Health Risk", use_container_width=True):
+# ---------- Research-Based Health Suggestions ----------
+st.markdown("---")
+st.markdown("### 📚 Personalized Health Suggestions (Research-Based)")
 
-    input_data = np.array([[age, bp, chol, bmi]])
-    prediction = model.predict(input_data)[0]
+suggestions = research_based_suggestions(age, bp, chol, bmi)
 
-    # Probability
-    prob = model.predict_proba(input_data)[0]
-    risk_percent = int(max(prob) * 100)
+with st.expander("🧠 View Evidence-Based Health Advice"):
+    for tip in suggestions:
+        st.markdown(f"- {tip}")
 
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("📊 Prediction Result")
+st.caption(
+    "Sources: American Heart Association (2022), WHO, Harvard Medical School, The Lancet (2021)"
+)
 
-    st.progress(risk_percent)
-
-    if prediction == 1:
-        st.markdown(
-            f"<div class='risk-high'>🚨 High Health Risk Detected ({risk_percent}%)</div>",
-            unsafe_allow_html=True
-        )
-    else:
-        st.markdown(
-            f"<div class='risk-low'>✅ Low Health Risk ({risk_percent}%)</div>",
-            unsafe_allow_html=True
-        )
-
-    st.markdown("</div>", unsafe_allow_html=True)
 
     # -------------------- HEALTH GUIDANCE -----------------
 
