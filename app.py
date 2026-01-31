@@ -149,18 +149,44 @@ st.markdown("---")
 
 # -------------------- PREDICTION --------------------
 # ---------- Research-Based Health Suggestions ----------
-st.markdown("---")
-st.markdown("### 📚 Personalized Health Suggestions (Research-Based)")
+if st.button("🔍 Predict Health Risk"):
 
-suggestions = research_based_suggestions(age, bp, chol, bmi)
+    # ---------------- Prediction ----------------
+    input_data = [[age, bp, chol, bmi]]
+    prediction = model.predict(input_data)[0]
+    probability = model.predict_proba(input_data)[0]
 
-with st.expander("🧠 View Evidence-Based Health Advice"):
-    for tip in suggestions:
-        st.markdown(f"- {tip}")
+    st.markdown("---")
+    st.markdown("## 📊 Prediction Result")
 
-st.caption(
-    "Sources: American Heart Association (2022), WHO, Harvard Medical School, The Lancet (2021)"
-)
+    if prediction == 1:
+        st.error(f"⚠️ High Health Risk ({round(max(probability)*100, 2)}%)")
+    else:
+        st.success(f"✅ Low Health Risk ({round(max(probability)*100, 2)}%)")
+
+    # ---------------- Visual Risk Bar ----------------
+    st.progress(int(max(probability) * 100))
+
+    # ---------------- Research-Based Suggestions ----------------
+    st.markdown("---")
+    st.markdown("## 📚 Personalized Health Suggestions (Evidence-Based)")
+
+    suggestions = research_based_suggestions(age, bp, chol, bmi)
+
+    col1, col2 = st.columns(2)
+
+    for i, tip in enumerate(suggestions):
+        if i % 2 == 0:
+            with col1:
+                st.info(tip)
+        else:
+            with col2:
+                st.warning(tip)
+
+    st.caption(
+        "📖 Sources: American Heart Association (2022), WHO, Harvard Medical School, The Lancet (2021)"
+    )
+
 
 
     # -------------------- HEALTH GUIDANCE -----------------
