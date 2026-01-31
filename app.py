@@ -36,8 +36,6 @@ def research_based_suggestions(risk_level, bp, chol, bmi):
 # ---------- Suggestions UI ----------
 st.markdown("## 🩺 Personalized Health Suggestions")
 
-tips = research_based_suggestions(risk_level, bp, chol, bmi)
-
 cols = st.columns(len(tips))
 
 for col, tip in zip(cols, tips):
