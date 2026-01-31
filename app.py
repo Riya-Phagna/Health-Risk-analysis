@@ -38,23 +38,6 @@ st.markdown("## 🩺 Personalized Health Suggestions")
 
 
 
-for col, tip in zip(cols, tips):
-    with col:
-        st.markdown(
-            f"""
-            <div style="
-                background-color:#f9f9f9;
-                padding:15px;
-                border-radius:12px;
-                border-left:5px solid #4CAF50;
-                box-shadow:0px 2px 6px rgba(0,0,0,0.1);
-                height:150px;">
-                ✅ {tip}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-
 
 
 def research_based_suggestions(age, bp, chol, bmi):
@@ -226,6 +209,30 @@ else:
     st.progress(int(risk_score * 100))
 
 
+# ---------- Suggestions UI ----------
+st.markdown("## 🩺 Personalized Health Suggestions")
+
+tips = research_based_suggestions(risk_level, bp, chol, bmi)
+
+# Create columns ONLY if tips exist
+cols = st.columns(len(tips))
+
+for col, tip in zip(cols, tips):
+    with col:
+        st.markdown(
+            f"""
+            <div style="
+                background-color:#f9f9f9;
+                padding:15px;
+                border-radius:12px;
+                border-left:5px solid #4CAF50;
+                box-shadow:0px 2px 6px rgba(0,0,0,0.1);
+                height:150px;">
+                ✅ {tip}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
 
     # ---------------- Visual Risk Bar ----------------
     st.progress(int(max(probability) * 100))
