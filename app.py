@@ -31,12 +31,7 @@ def research_based_suggestions(risk_level, bp, chol, bmi):
     return suggestions
 
 # Determine risk level text
-if risk_score < 0.4:
-    risk_level = "Low"
-elif risk_score < 0.7:
-    risk_level = "Mild"
-else:
-    risk_level = "High"
+
 
 # ---------- Suggestions UI ----------
 st.markdown("## 🩺 Personalized Health Suggestions")
