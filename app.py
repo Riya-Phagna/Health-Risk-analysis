@@ -177,27 +177,36 @@ if st.button("🔍 Predict Health Risk", use_container_width=True):
 
     # -------------------- HEALTH GUIDANCE -----------------
 
-  def research_based_suggestions(age, bp, chol, bmi):
-       tips = []
+ 
+
+
+# -------------------- FOOTER --------------------
+st.markdown(
+    "<hr><center style='color:gray;'>Developed by Riya Phagna • Streamlit ML Health App</center>",
+    unsafe_allow_html=True
+)
+
+def research_based_suggestions(age, bp, chol, bmi):
+    tips = []
 
     if bp >= 130:
         tips.append(
-            "🩸 **Blood Pressure Control**: American Heart Association (2022) recommends reducing salt intake and doing 150 minutes/week of moderate exercise to lower BP."
+            "🩺 **Blood Pressure Control**: American Heart Association (2022) recommends reducing salt intake, avoiding processed food, and doing at least 150 minutes/week of moderate exercise."
         )
 
     if chol >= 200:
         tips.append(
-            "🧪 **Cholesterol Management**: Harvard Medical School research shows replacing saturated fats with nuts, olive oil, and fish can reduce LDL cholesterol."
+            "🥗 **Cholesterol Management**: Harvard Medical School studies show replacing saturated fats with nuts, olive oil, fruits, and fish can reduce LDL cholesterol."
         )
 
     if bmi >= 25:
         tips.append(
-            "⚖️ **Weight Management**: WHO studies indicate that losing 5–10% body weight significantly reduces cardiovascular risk."
+            "⚖️ **Weight Management**: WHO research indicates that losing 5–10% of body weight significantly reduces cardiovascular risk."
         )
 
     if age >= 45:
         tips.append(
-            "🧓 **Age-Based Screening**: The Lancet (2021) recommends regular cardiovascular screening after age 45."
+            "🧠 **Age-Based Screening**: The Lancet (2021) recommends regular cardiovascular screening after age 45 for early risk detection."
         )
 
     if not tips:
@@ -207,10 +216,3 @@ if st.button("🔍 Predict Health Risk", use_container_width=True):
 
     return tips
 
-
-
-# -------------------- FOOTER --------------------
-st.markdown(
-    "<hr><center style='color:gray;'>Developed by Riya Phagna • Streamlit ML Health App</center>",
-    unsafe_allow_html=True
-)
