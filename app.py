@@ -205,6 +205,14 @@ for col, tip in zip(cols, tips):
             """,
             unsafe_allow_html=True
         )
+        if tips:
+    cols = st.columns(len(tips))
+    for col, tip in zip(cols, tips):
+        with col:
+            st.success(tip)
+else:
+    st.info("No suggestions available for this risk level.")
+
         
 def research_based_suggestions(age, bp, chol, bmi):
     tips = []
