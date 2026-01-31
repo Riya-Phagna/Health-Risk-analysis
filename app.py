@@ -150,23 +150,26 @@ st.markdown("---")
 # -------------------- PREDICTION --------------------
 # ---------- Research-Based Health Suggestions ----------
 if st.button("🔍 Predict Health Risk"):
+    prediction = model.predict(input_data)
+probability = model.predict_proba(input_data)
+risk_score = probability[0][1]  # probability of High Risk
+
 
     # ---------------- Prediction ----------------
-    risk_score = max(probability)
-
-st.markdown("## 📊 Prediction Result")
+    st.markdown("## 📊 Prediction Result")
 
 if risk_score < 0.4:
-    st.success("✅ Low Health Risk")
+    st.success(f"✅ Low Health Risk ({int(risk_score*100)}%)")
     st.progress(int(risk_score * 100))
 
 elif risk_score < 0.7:
-    st.warning("⚠️ Mild Health Risk")
+    st.warning(f"⚠️ Mild Health Risk ({int(risk_score*100)}%)")
     st.progress(int(risk_score * 100))
 
 else:
-    st.error("🚨 High Health Risk")
+    st.error(f"🚨 High Health Risk ({int(risk_score*100)}%)")
     st.progress(int(risk_score * 100))
+
 
 
     # ---------------- Visual Risk Bar ----------------
