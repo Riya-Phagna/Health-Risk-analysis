@@ -2,6 +2,14 @@ import streamlit as st
 import numpy as np
 import joblib
 
+
+@st.cache_resource
+def load_model():
+    return joblib.load("model.pkl")
+
+model = load_model()
+
+
 # -------------------- PAGE CONFIG --------------------
 st.set_page_config(
     page_title="Health Risk Analysis System",
