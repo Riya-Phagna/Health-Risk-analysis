@@ -2,6 +2,27 @@ import streamlit as st
 import numpy as np
 import joblib
 
+def research_based_suggestions(age, bp, chol, bmi):
+    tips = []
+
+    if bp >= 130:
+        tips.append("🩸 Reduce salt intake and exercise regularly (AHA, 2022).")
+
+    if chol >= 200:
+        tips.append("🧪 Replace saturated fats with healthy fats like olive oil (Harvard).")
+
+    if bmi >= 25:
+        tips.append("⚖️ Lose 5–10% body weight to reduce heart risk (WHO).")
+
+    if age >= 45:
+        tips.append("🧓 Regular cardiovascular screening is recommended (Lancet).")
+
+    if not tips:
+        tips.append("✅ Maintain healthy lifestyle and regular checkups.")
+
+    return tips
+
+
 
 @st.cache_resource
 def load_model():
@@ -154,8 +175,7 @@ if st.button("🔍 Predict Health Risk", use_container_width=True):
 
     st.markdown("</div>", unsafe_allow_html=True)
 
-    # -------------------- HEALTH GUIDANCE --------------------
-  tips = research_based_suggestions(age, bp, chol, bmi)
+    # -------------------- HEALTH GUIDANCE -----------------
 
   def research_based_suggestions(age, bp, chol, bmi):
        tips = []
