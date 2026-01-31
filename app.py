@@ -182,36 +182,33 @@ else:
 
 
 # ---------- Suggestions UI ----------
+# ---------- Research-Based Health Suggestions ----------
 st.markdown("## 🩺 Personalized Health Suggestions")
 
 tips = research_based_suggestions(risk_level, bp, chol, bmi)
 
-# Create columns ONLY if tips exist
-cols = st.columns(len(tips))
-
-for col, tip in zip(cols, tips):
-    with col:
-        st.markdown(
-            f"""
-            <div style="
-                background-color:#f9f9f9;
-                padding:15px;
-                border-radius:12px;
-                border-left:5px solid #4CAF50;
-                box-shadow:0px 2px 6px rgba(0,0,0,0.1);
-                height:150px;">
-                ✅ {tip}
-            </div>
-            """,
-            unsafe_allow_html=True
-        )
-        if tips:
+if tips:
     cols = st.columns(len(tips))
+
     for col, tip in zip(cols, tips):
         with col:
-            st.success(tip)
+            st.markdown(
+                f"""
+                <div style="
+                    background-color:#f9f9f9;
+                    padding:15px;
+                    border-radius:12px;
+                    border-left:6px solid #4CAF50;
+                    box-shadow:0px 4px 8px rgba(0,0,0,0.08);
+                    min-height:140px;">
+                    ✅ <b>{tip}</b>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 else:
-    st.info("No suggestions available for this risk level.")
+    st.info("No suggestions available for the given inputs.")
+
 
         
 def research_based_suggestions(age, bp, chol, bmi):
