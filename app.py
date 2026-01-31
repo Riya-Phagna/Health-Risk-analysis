@@ -1,6 +1,8 @@
 import streamlit as st
 import numpy as np
 import joblib
+from backend.risk_logic import assess_health_risk
+
 
 def research_based_suggestions(risk_level, bp, chol, bmi):
     suggestions = []
@@ -161,24 +163,25 @@ input_data = np.array([[age, bp, chol, bmi]])
 
 
 # -------------------- PREDICTION --------------------
-# ---------- Research-Based Health Suggestions ----------
-if st.button("🔍 Predict Health Risk"):
-    prediction = model.predict(input_data)
-probability = model.predict_proba(input_data)
-risk_score = probability[0][1]  # probability of High Risk
+if st.button("Predict Health Risk"):
+    risk_score, risk_level, suggestions = assess_health_risk(
+        age,
+        cholesterol,
+        systolic_bp,
+        bmi
+    )
 
+    if risk_level == "High":
+        st.error(f"High Health Risk ({risk_score*100:.0f}%)")
+    elif risk_level == "Moderate":
+        st.warning(f"Moderate Health Risk ({risk_score*100:.0f}%)")
+    else:
+        st.success(f"Low Health Risk ({risk_score*100:.0f}%)")
 
-if risk_score < 0.4:
-    st.success(f"✅ Low Health Risk ({int(risk_score*100)}%)")
-    st.progress(int(risk_score * 100))
+    st.subheader("Personalized Health Suggestions")
+    for s in suggestions:
+        st.write("✅", s)
 
-elif risk_score < 0.7:
-    st.warning(f"⚠️ Mild Health Risk ({int(risk_score*100)}%)")
-    st.progress(int(risk_score * 100))
-
-else:
-    st.error(f"🚨 High Health Risk ({int(risk_score*100)}%)")
-    st.progress(int(risk_score * 100))
 
 
 # ---------- Suggestions UI ----------
