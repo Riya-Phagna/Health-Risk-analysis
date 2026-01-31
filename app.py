@@ -145,6 +145,9 @@ with st.container():
         )
 
 st.markdown("---")
+import numpy as np
+
+input_data = np.array([[age, bp, chol, bmi]])
 
 
 # -------------------- PREDICTION --------------------
