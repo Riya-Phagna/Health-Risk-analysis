@@ -152,17 +152,22 @@ st.markdown("---")
 if st.button("🔍 Predict Health Risk"):
 
     # ---------------- Prediction ----------------
-    input_data = [[age, bp, chol, bmi]]
-    prediction = model.predict(input_data)[0]
-    probability = model.predict_proba(input_data)[0]
+    risk_score = max(probability)
 
-    st.markdown("---")
-    st.markdown("## 📊 Prediction Result")
+st.markdown("## 📊 Prediction Result")
 
-    if prediction == 1:
-        st.error(f"⚠️ High Health Risk ({round(max(probability)*100, 2)}%)")
-    else:
-        st.success(f"✅ Low Health Risk ({round(max(probability)*100, 2)}%)")
+if risk_score < 0.4:
+    st.success("✅ Low Health Risk")
+    st.progress(int(risk_score * 100))
+
+elif risk_score < 0.7:
+    st.warning("⚠️ Mild Health Risk")
+    st.progress(int(risk_score * 100))
+
+else:
+    st.error("🚨 High Health Risk")
+    st.progress(int(risk_score * 100))
+
 
     # ---------------- Visual Risk Bar ----------------
     st.progress(int(max(probability) * 100))
