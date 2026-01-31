@@ -83,15 +83,48 @@ st.markdown("<div class='main-title'>🩺 Health Risk Analysis System</div>", un
 st.markdown("<div class='subtitle'>AI-powered health risk prediction using Machine Learning</div>", unsafe_allow_html=True)
 
 # -------------------- INPUT CARD --------------------
-st.markdown("<div class='card'>", unsafe_allow_html=True)
-st.subheader("📋 Enter Patient Details")
+st.markdown("## 🧾 Patient Health Details")
 
-age = st.slider("Age (years)", 1, 100, 30)
-bp = st.slider("Blood Pressure (mmHg)", 60, 200, 120)
-chol = st.slider("Cholesterol (mg/dL)", 100, 350, 200)
-bmi = st.slider("BMI", 10.0, 45.0, 24.0)
+with st.container():
+    col1, col2 = st.columns(2)
 
-st.markdown("</div>", unsafe_allow_html=True)
+    with col1:
+        age = st.slider(
+            "🎂 Age (years)",
+            min_value=1,
+            max_value=100,
+            value=35,
+            help="Age is a major cardiovascular risk factor (WHO, 2023)"
+        )
+
+        bp = st.slider(
+            "🩸 Blood Pressure (mmHg)",
+            min_value=80,
+            max_value=200,
+            value=120,
+            help="Systolic blood pressure"
+        )
+
+    with col2:
+        chol = st.slider(
+            "🧪 Cholesterol (mg/dL)",
+            min_value=100,
+            max_value=350,
+            value=200,
+            help="Total cholesterol level"
+        )
+
+        bmi = st.slider(
+            "⚖️ BMI",
+            min_value=10.0,
+            max_value=45.0,
+            value=23.0,
+            step=0.1,
+            help="Body Mass Index"
+        )
+
+st.markdown("---")
+
 
 # -------------------- PREDICTION --------------------
 if st.button("🔍 Predict Health Risk", use_container_width=True):
@@ -122,31 +155,36 @@ if st.button("🔍 Predict Health Risk", use_container_width=True):
     st.markdown("</div>", unsafe_allow_html=True)
 
     # -------------------- HEALTH GUIDANCE --------------------
-    st.markdown("<div class='card'>", unsafe_allow_html=True)
-    st.subheader("🧠 Evidence-Based Health Guidance")
-
+   def research_based_suggestions(age, bp, chol, bmi):
     tips = []
 
-    if bp > 130:
-        tips.append("🫀 Reduce salt intake and monitor blood pressure regularly.")
+    if bp >= 130:
+        tips.append(
+            "🩸 **Blood Pressure Control**: Research from the American Heart Association (2022) shows that reducing sodium intake and engaging in 150 minutes/week of moderate exercise can significantly lower blood pressure."
+        )
 
-    if chol > 200:
-        tips.append("🥗 Follow a low-cholesterol diet (less fried food, more fiber).")
+    if chol >= 200:
+        tips.append(
+            "🧪 **Cholesterol Management**: According to Harvard Medical School studies, replacing saturated fats with unsaturated fats (olive oil, nuts) can reduce LDL cholesterol by up to 15%."
+        )
 
-    if bmi > 25:
-        tips.append("🏃 Aim for at least 30 minutes of exercise daily.")
+    if bmi >= 25:
+        tips.append(
+            "⚖️ **Weight Management**: WHO research indicates that a 5–10% reduction in body weight lowers cardiovascular risk and improves metabolic health."
+        )
 
-    if age > 45:
-        tips.append("🩺 Schedule routine health checkups every 6 months.")
+    if age >= 45:
+        tips.append(
+            "🧓 **Age-Related Risk**: The Lancet (2021) highlights that regular cardiovascular screening after age 45 helps early detection and prevention."
+        )
 
-    tips.append("💤 Maintain 7–8 hours of quality sleep.")
-    tips.append("🚭 Avoid smoking and limit alcohol consumption.")
-    tips.append("💧 Drink adequate water daily.")
+    if not tips:
+        tips.append(
+            "✅ **Healthy Profile**: Current parameters are within recommended ranges. Maintain a balanced diet, regular physical activity, and periodic health checkups (WHO Guidelines)."
+        )
 
-    for tip in tips:
-        st.markdown(f"<div class='tip-box'>{tip}</div>", unsafe_allow_html=True)
+    return tips
 
-    st.markdown("</div>", unsafe_allow_html=True)
 
 # -------------------- FOOTER --------------------
 st.markdown(
