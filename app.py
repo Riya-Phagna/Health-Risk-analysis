@@ -185,7 +185,7 @@ else:
 # ---------- Research-Based Health Suggestions ----------
 st.markdown("## 🩺 Personalized Health Suggestions")
 
-tips = research_based_suggestions(risk_level, bp, chol, bmi)
+tips = research_based_suggestions(age, bp, chol, bmi)
 
 if tips:
     cols = st.columns(len(tips))
