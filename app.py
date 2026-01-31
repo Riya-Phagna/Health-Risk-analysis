@@ -155,35 +155,38 @@ if st.button("🔍 Predict Health Risk", use_container_width=True):
     st.markdown("</div>", unsafe_allow_html=True)
 
     # -------------------- HEALTH GUIDANCE --------------------
-   def research_based_suggestions(age, bp, chol, bmi):
-    tips = []
+  tips = research_based_suggestions(age, bp, chol, bmi)
+
+  def research_based_suggestions(age, bp, chol, bmi):
+       tips = []
 
     if bp >= 130:
         tips.append(
-            "🩸 **Blood Pressure Control**: Research from the American Heart Association (2022) shows that reducing sodium intake and engaging in 150 minutes/week of moderate exercise can significantly lower blood pressure."
+            "🩸 **Blood Pressure Control**: American Heart Association (2022) recommends reducing salt intake and doing 150 minutes/week of moderate exercise to lower BP."
         )
 
     if chol >= 200:
         tips.append(
-            "🧪 **Cholesterol Management**: According to Harvard Medical School studies, replacing saturated fats with unsaturated fats (olive oil, nuts) can reduce LDL cholesterol by up to 15%."
+            "🧪 **Cholesterol Management**: Harvard Medical School research shows replacing saturated fats with nuts, olive oil, and fish can reduce LDL cholesterol."
         )
 
     if bmi >= 25:
         tips.append(
-            "⚖️ **Weight Management**: WHO research indicates that a 5–10% reduction in body weight lowers cardiovascular risk and improves metabolic health."
+            "⚖️ **Weight Management**: WHO studies indicate that losing 5–10% body weight significantly reduces cardiovascular risk."
         )
 
     if age >= 45:
         tips.append(
-            "🧓 **Age-Related Risk**: The Lancet (2021) highlights that regular cardiovascular screening after age 45 helps early detection and prevention."
+            "🧓 **Age-Based Screening**: The Lancet (2021) recommends regular cardiovascular screening after age 45."
         )
 
     if not tips:
         tips.append(
-            "✅ **Healthy Profile**: Current parameters are within recommended ranges. Maintain a balanced diet, regular physical activity, and periodic health checkups (WHO Guidelines)."
+            "✅ **Healthy Profile**: Your values are within recommended limits. Maintain physical activity, balanced diet, and regular health checkups (WHO)."
         )
 
     return tips
+
 
 
 # -------------------- FOOTER --------------------
