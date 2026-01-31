@@ -3,7 +3,6 @@ import numpy as np
 import joblib
 from backend.risk_logic import assess_health_risk
 
-
 def research_based_suggestions(risk_level, bp, chol, bmi):
     suggestions = []
 
