@@ -2,6 +2,68 @@ import streamlit as st
 import numpy as np
 import joblib
 
+def research_based_suggestions(risk_level, bp, chol, bmi):
+    suggestions = []
+
+    if risk_level == "Low":
+        suggestions = [
+            "Maintain regular physical activity (WHO, 2020)",
+            "Continue balanced diet with fruits & vegetables (Harvard Health)",
+            "Annual health screening is recommended"
+        ]
+
+    elif risk_level == "Mild":
+        suggestions = [
+            "Reduce salt intake to <5g/day (WHO, 2021)",
+            "Engage in at least 150 minutes of exercise/week (AHA)",
+            "Monitor blood pressure monthly",
+            "Limit saturated fat intake (NIH)"
+        ]
+
+    else:  # High
+        suggestions = [
+            "Consult a physician immediately (AHA Guidelines)",
+            "Adopt DASH or Mediterranean diet (NIH)",
+            "Avoid smoking & alcohol (WHO)",
+            "Daily BP and cholesterol monitoring advised"
+        ]
+
+    return suggestions
+
+# Determine risk level text
+if risk_score < 0.4:
+    risk_level = "Low"
+elif risk_score < 0.7:
+    risk_level = "Mild"
+else:
+    risk_level = "High"
+
+# ---------- Suggestions UI ----------
+st.markdown("## 🩺 Personalized Health Suggestions")
+
+tips = research_based_suggestions(risk_level, bp, chol, bmi)
+
+cols = st.columns(len(tips))
+
+for col, tip in zip(cols, tips):
+    with col:
+        st.markdown(
+            f"""
+            <div style="
+                background-color:#f9f9f9;
+                padding:15px;
+                border-radius:12px;
+                border-left:5px solid #4CAF50;
+                box-shadow:0px 2px 6px rgba(0,0,0,0.1);
+                height:150px;">
+                ✅ {tip}
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+
 def research_based_suggestions(age, bp, chol, bmi):
     tips = []
 
