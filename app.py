@@ -155,9 +155,6 @@ probability = model.predict_proba(input_data)
 risk_score = probability[0][1]  # probability of High Risk
 
 
-    # ---------------- Prediction ----------------
-    st.markdown("## 📊 Prediction Result")
-
 if risk_score < 0.4:
     st.success(f"✅ Low Health Risk ({int(risk_score*100)}%)")
     st.progress(int(risk_score * 100))
