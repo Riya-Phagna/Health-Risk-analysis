@@ -33,34 +33,6 @@ def research_based_suggestions(risk_level, bp, chol, bmi):
 # Determine risk level text
 
 
-# ---------- Suggestions UI ----------
-st.markdown("## 🩺 Personalized Health Suggestions")
-
-
-
-
-
-def research_based_suggestions(age, bp, chol, bmi):
-    tips = []
-
-    if bp >= 130:
-        tips.append("🩸 Reduce salt intake and exercise regularly (AHA, 2022).")
-
-    if chol >= 200:
-        tips.append("🧪 Replace saturated fats with healthy fats like olive oil (Harvard).")
-
-    if bmi >= 25:
-        tips.append("⚖️ Lose 5–10% body weight to reduce heart risk (WHO).")
-
-    if age >= 45:
-        tips.append("🧓 Regular cardiovascular screening is recommended (Lancet).")
-
-    if not tips:
-        tips.append("✅ Maintain healthy lifestyle and regular checkups.")
-
-    return tips
-
-
 
 @st.cache_resource
 def load_model():
@@ -233,6 +205,26 @@ for col, tip in zip(cols, tips):
             """,
             unsafe_allow_html=True
         )
+        
+def research_based_suggestions(age, bp, chol, bmi):
+    tips = []
+
+    if bp >= 130:
+        tips.append("🩸 Reduce salt intake and exercise regularly (AHA, 2022).")
+
+    if chol >= 200:
+        tips.append("🧪 Replace saturated fats with healthy fats like olive oil (Harvard).")
+
+    if bmi >= 25:
+        tips.append("⚖️ Lose 5–10% body weight to reduce heart risk (WHO).")
+
+    if age >= 45:
+        tips.append("🧓 Regular cardiovascular screening is recommended (Lancet).")
+
+    if not tips:
+        tips.append("✅ Maintain healthy lifestyle and regular checkups.")
+
+    return tips
 
     # ---------------- Visual Risk Bar ----------------
     st.progress(int(max(probability) * 100))
