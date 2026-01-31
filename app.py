@@ -166,8 +166,8 @@ input_data = np.array([[age, bp, chol, bmi]])
 if st.button("Predict Health Risk"):
     risk_score, risk_level, suggestions = assess_health_risk(
         age,
-        cholesterol,
-        systolic_bp,
+        cholesterol_level,
+        bp,
         bmi
     )
 
