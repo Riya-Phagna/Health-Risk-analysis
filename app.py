@@ -3,8 +3,22 @@ import numpy as np
 import joblib
 from risk_logic import assess_health_risk
 
+# UI inputs
+age = st.slider(...)
+bp = st.slider(...)
+chol = st.slider(...)
+bmi = st.slider(...)
 
-input_data = np.array([[age, bp, chol, bmi]])
+# button logic
+if st.button("Predict Health Risk"):
+
+    input_data = np.array([[age, bp, chol, bmi]])
+
+    prediction = model.predict(input_data)
+    probability = model.predict_proba(input_data)
+    risk_score = probability[0][1]
+
+
 
 
 
