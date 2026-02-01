@@ -10,12 +10,45 @@ st.set_page_config(
 )
 
 # ---------------- Load Model ----------------
-@st.cache_resource
-def load_model():
-    with open("model.pkl", "rb") as f:
-        return pickle.load(f)
+import streamlit as st
+import pickle
+import os
 
-model = load_model()
+# ---------------- SAFE MODEL LOADER ----------------
+@st.cache_resource
+def load_model_safe():
+    try:
+        with open("model.pkl", "rb") as f:
+            return pickle.load(f), "ml"
+    except Exception as e:
+        return None, "rule"
+
+model, mode = load_model_safe()
+
+# ---------------- RULE-BASED FALLBACK ----------------
+def rule_based_risk(bmi, cholesterol):
+    if bmi >= 30 or cholesterol >= 240:
+        return "High Risk"
+    elif bmi >= 25 or cholesterol >= 200:
+        return "Medium Risk"
+    else:
+        return "Low Risk"
+
+# ---------------- UI ----------------
+st.title("🧠 AI-powered Health Risk Predictor")
+
+bmi = st.number_input("BMI", 10.0, 60.0, 22.0)
+cholesterol = st.number_input("Cholesterol Level (mg/dL)", 100, 400, 180)
+
+if st.button("Predict Risk"):
+    if mode == "ml":
+        prediction = model.predict([[bmi, cholesterol]])[0]
+        st.success(f"🧪 ML Model Prediction: **{prediction}**")
+    else:
+        prediction = rule_based_risk(bmi, cholesterol)
+        st.warning("⚠️ ML model unavailable. Using rule-based logic.")
+        st.success(f"📊 Risk Level: **{prediction}**")
+
 
 # ---------------- UI ----------------
 st.title("🩺 AI-powered Health Risk Prediction")
