@@ -10,13 +10,6 @@ st.set_page_config(
     layout="centered"
 )
 
-# ================= UI =================
-st.set_page_config(
-    page_title="AI Health Risk Analyzer",
-    page_icon="🩺",
-    layout="centered"
-)
-
 st.markdown("""
 <style>
 .main {
