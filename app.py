@@ -35,19 +35,7 @@ def rule_based_risk(bmi, cholesterol):
         return "Low Risk"
 
 # ---------------- UI ----------------
-st.title("🧠 AI-powered Health Risk Predictor")
 
-bmi = st.number_input("BMI", 10.0, 60.0, 22.0)
-cholesterol = st.number_input("Cholesterol Level (mg/dL)", 100, 400, 180)
-
-if st.button("Predict Risk"):
-    if mode == "ml":
-        prediction = model.predict([[bmi, cholesterol]])[0]
-        st.success(f"🧪 ML Model Prediction: **{prediction}**")
-    else:
-        prediction = rule_based_risk(bmi, cholesterol)
-        st.warning("⚠️ ML model unavailable. Using rule-based logic.")
-        st.success(f"📊 Risk Level: **{prediction}**")
 
 
 # ---------------- UI ----------------
