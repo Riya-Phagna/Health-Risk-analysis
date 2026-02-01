@@ -1,111 +1,126 @@
 import streamlit as st
 import numpy as np
-import joblib
+import pickle
 
-# ------------------ PAGE CONFIG ------------------
+# ---------------- Page Config ----------------
 st.set_page_config(
     page_title="Health Risk Analysis",
     page_icon="🩺",
-    layout="wide"
+    layout="centered"
 )
 
-# ------------------ LOAD MODEL ------------------
-model = joblib.load("model.pkl")
+# ---------------- Load Model ----------------
+@st.cache_resource
+def load_model():
+    with open("model.pkl", "rb") as f:
+        return pickle.load(f)
 
-# ------------------ TITLE ------------------
-st.markdown(
-    "<h1 style='text-align:center;'>🩺 AI-Powered Health Risk Analysis</h1>",
-    unsafe_allow_html=True
-)
-st.markdown(
-    "<p style='text-align:center;color:gray;'>Machine Learning based health risk prediction</p>",
-    unsafe_allow_html=True
-)
+model = load_model()
 
-st.divider()
+# ---------------- UI ----------------
+st.title("🩺 AI-powered Health Risk Prediction")
+st.caption("Hybrid ML + Clinical Rule Based Assessment")
 
-# ------------------ INPUT UI ------------------
 st.markdown("## 📋 Patient Health Details")
 
 col1, col2 = st.columns(2)
 
 with col1:
-    age = st.slider("🎂 Age (years)", 1, 100, 35)
-    bp = st.slider("🩸 Blood Pressure (mmHg)", 80, 200, 110)
+    age = st.slider("🧓 Age (years)", 18, 80, 35)
+    bp = st.slider("🩸 Blood Pressure (mmHg)", 80, 200, 120)
 
 with col2:
-    chol = st.slider("🧪 Cholesterol (mg/dL)", 100, 300, 200)
-    bmi = st.slider("⚖️ BMI", 10.0, 45.0, 23.0)
+    chol = st.slider("🧪 Cholesterol (mg/dL)", 100, 350, 180)
+    bmi = st.slider("⚖️ BMI", 12.0, 45.0, 23.0)
 
-st.divider()
+# ---------------- Hybrid Risk Logic ----------------
+def assess_risk(age, bp, chol, bmi):
+    """
+    Hybrid logic:
+    - Clinical risk points → Risk Level
+    - ML model → Confidence score
+    """
 
-# ------------------ PREDICTION ------------------
-if st.button("🔍 Predict Health Risk"):
+    # ----- Clinical Risk Scoring -----
+    risk_points = 0
 
-    # Prepare input
-    input_data = np.array([[age, bp, chol, bmi]])
+    if bp >= 130:
+        risk_points += 1
+    if chol >= 200:
+        risk_points += 1
+    if bmi >= 25:
+        risk_points += 1
+    if age >= 45:
+        risk_points += 1
 
-    # Model prediction
-    probability = model.predict_proba(input_data)
-    risk_score = probability[0][1]  # probability of higher risk
-
-    # ------------------ RISK LEVEL LOGIC ------------------
-    if risk_score < 0.33:
+    # ----- Risk Level -----
+    if risk_points <= 1:
         risk_level = "Low"
         color = "#2ecc71"
-    elif risk_score < 0.66:
+    elif risk_points == 2:
         risk_level = "Mild"
-        color = "#f1c40f"
+        color = "#f39c12"
     else:
         risk_level = "High"
         color = "#e74c3c"
 
-    # ------------------ DISPLAY RESULT ------------------
+    # ----- ML Probability (Confidence only) -----
+    input_data = np.array([[age, bp, chol, bmi]])
+    prob = model.predict_proba(input_data)[0][1]
+    confidence = round(prob * 100, 2)
+
+    return risk_level, confidence, color, risk_points
+
+# ---------------- Research-Based Suggestions ----------------
+def research_based_suggestions(risk_level):
+    if risk_level == "Low":
+        return [
+            "🟢 **Healthy Lifestyle Maintenance** — WHO (2022): Continue regular physical activity (150 min/week) and balanced diet.",
+            "🥗 **Preventive Nutrition** — Harvard T.H. Chan: High fiber & fruits reduce long-term cardiovascular risk.",
+            "🩺 **Routine Screening** — CDC: Annual BP & cholesterol checks recommended."
+        ]
+
+    elif risk_level == "Mild":
+        return [
+            "🟡 **Early Cardiovascular Prevention** — American Heart Association (2021): Reduce sodium & increase aerobic exercise.",
+            "🥑 **Dietary Fat Modification** — Harvard Medical School: Replace saturated fats with olive oil, nuts, and fish.",
+            "📉 **Weight Control** — WHO: 5–10% weight reduction lowers cardiometabolic risk."
+        ]
+
+    else:  # High Risk
+        return [
+            "🔴 **Clinical Intervention Required** — The Lancet (2020): High BP & cholesterol require medical supervision.",
+            "💊 **Medication + Lifestyle** — American College of Cardiology: Combined therapy significantly reduces heart events.",
+            "🚭 **Risk Factor Elimination** — NIH: Smoking cessation & stress control dramatically lower mortality."
+        ]
+
+# ---------------- Prediction ----------------
+if st.button("🔍 Predict Health Risk"):
+    risk_level, confidence, color, points = assess_risk(age, bp, chol, bmi)
+
     st.markdown("## 📊 Prediction Result")
 
     st.markdown(
         f"""
         <div style="
             background-color:{color};
-            padding:20px;
-            border-radius:12px;
+            padding:18px;
+            border-radius:14px;
             color:white;
+            font-size:20px;
             text-align:center;
-            font-size:22px;
             font-weight:bold;">
-            {risk_level} Health Risk<br>
-            Risk Probability: {risk_score*100:.1f}%
+            {risk_level} Health Risk
+            <br>
+            <span style="font-size:14px;">ML Confidence: {confidence}%</span>
         </div>
         """,
         unsafe_allow_html=True
     )
 
-    st.divider()
+    st.markdown("## 🩺 Personalized Health Suggestions")
 
-    # ------------------ RESEARCH-BASED SUGGESTIONS ------------------
-    st.markdown("## 🧠 Research-Based Health Suggestions")
-
-    if risk_level == "Low":
-        tips = [
-            "Maintain regular physical activity (150 min/week) — WHO 2020",
-            "Continue balanced diet with fruits & vegetables — CDC",
-            "Annual health screening recommended — NIH"
-        ]
-
-    elif risk_level == "Mild":
-        tips = [
-            "Reduce salt intake to <5g/day — WHO Hypertension Guideline",
-            "Adopt DASH or Mediterranean diet — AHA",
-            "Increase aerobic exercise to improve heart health — Mayo Clinic"
-        ]
-
-    else:  # High Risk
-        tips = [
-            "Consult a physician for cardiovascular assessment — AHA",
-            "Strict cholesterol control through diet & medication — NIH",
-            "Weight reduction shown to reduce BP & diabetes risk — The Lancet"
-        ]
-
+    tips = research_based_suggestions(risk_level)
     cols = st.columns(len(tips))
 
     for col, tip in zip(cols, tips):
@@ -113,31 +128,18 @@ if st.button("🔍 Predict Health Risk"):
             st.markdown(
                 f"""
                 <div style="
-                    background-color:#f9f9f9;
+                    background:#f9f9f9;
                     padding:15px;
                     border-radius:12px;
                     border-left:6px solid {color};
                     box-shadow:0px 4px 8px rgba(0,0,0,0.08);
-                    min-height:140px;">
-                    ✅ <b>{tip}</b>
+                    min-height:160px;">
+                    {tip}
                 </div>
                 """,
                 unsafe_allow_html=True
             )
 
-    # ------------------ REFERENCES ------------------
-    st.markdown("### 📚 References")
-    st.markdown("""
-    - World Health Organization (WHO) – Cardiovascular Disease Guidelines  
-    - American Heart Association (AHA)  
-    - Centers for Disease Control and Prevention (CDC)  
-    - National Institutes of Health (NIH)  
-    - The Lancet – Lifestyle & Cardiovascular Risk Studies  
-    """)
-
-st.divider()
-
-st.markdown(
-    "<p style='text-align:center;color:gray;'>Developed by Riya Phagna • Streamlit ML Health App</p>",
-    unsafe_allow_html=True
-)
+# ---------------- Footer ----------------
+st.markdown("---")
+st.caption("Developed by Riya Phagna • Streamlit ML Health App")
