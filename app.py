@@ -9,21 +9,19 @@ st.set_page_config(
     layout="centered"
 )
 
-# ---------------- Load Model ----------------
 import streamlit as st
 import pickle
-import os
 
-# ---------------- SAFE MODEL LOADER ----------------
 @st.cache_resource
 def load_model_safe():
     try:
         with open("model.pkl", "rb") as f:
             return pickle.load(f), "ml"
-    except Exception as e:
+    except Exception:
         return None, "rule"
 
-model, mode = load_model_safe()
+model, model_mode = load_model_safe()
+
 
 # ---------------- RULE-BASED FALLBACK ----------------
 def rule_based_risk(bmi, cholesterol):
