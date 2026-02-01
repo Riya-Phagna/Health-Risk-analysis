@@ -4,6 +4,10 @@ import joblib
 from risk_logic import assess_health_risk
 
 
+input_data = np.array([[age, bp, chol, bmi]])
+
+
+
 def research_based_suggestions(risk_level, bp, chol, bmi):
     suggestions = []
 
@@ -164,27 +168,20 @@ input_data = np.array([[age, bp, chol, bmi]])
 
 # -------------------- PREDICTION --------------------
 if st.button("Predict Health Risk"):
-    risk, message = assess_health_risk(
-        age,
-        cholesterol,
-        bp,
-        bmi
-    )
 
-    st.success(f"Risk Level: {risk}")
-    st.info(message)
+    prediction = model.predict(input_data)
+    probability = model.predict_proba(input_data)
+    risk_score = probability[0][1]   # probability of HIGH risk
 
-
-    if risk_level == "High":
-        st.error(f"High Health Risk ({risk_score*100:.0f}%)")
-    elif risk_level == "Moderate":
-        st.warning(f"Moderate Health Risk ({risk_score*100:.0f}%)")
+    if risk_score < 0.4:
+        risk_level = "Low"
+    elif risk_score < 0.7:
+        risk_level = "Mild"
     else:
-        st.success(f"Low Health Risk ({risk_score*100:.0f}%)")
+        risk_level = "High"
 
-    st.subheader("Personalized Health Suggestions")
-    for s in suggestions:
-        st.write("✅", s)
+    st.success(f"Health Risk Level: {risk_level}")
+
 
 
 
