@@ -16,42 +16,69 @@ st.set_page_config(
 # --------------------------------------------------
 st.markdown("""
 <style>
+body {
+    background-color: #f4f7fb;
+    color: #1f2937;
+}
+
 .main-card {
     background-color: #ffffff;
-    padding: 28px;
-    border-radius: 16px;
-    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
+    padding: 30px;
+    border-radius: 18px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.06);
 }
+
 .step {
     font-size: 18px;
     font-weight: 600;
-    margin-top: 15px;
+    color: #2563eb;
+    margin-top: 18px;
 }
+
 .help-text {
     color: #6b7280;
     font-size: 14px;
 }
+
 .low-box {
-    background: #eafaf1;
+    background: #dcfce7;
     padding: 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     border-left: 6px solid #22c55e;
 }
+
 .mid-box {
     background: #fff7ed;
     padding: 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     border-left: 6px solid #f59e0b;
 }
+
 .high-box {
-    background: #fdecea;
+    background: #fee2e2;
     padding: 18px;
-    border-radius: 12px;
+    border-radius: 14px;
     border-left: 6px solid #ef4444;
 }
-footer {visibility: hidden;}
+
+button[kind="primary"] {
+    background-color: #2563eb !important;
+    color: white !important;
+    border-radius: 10px !important;
+    padding: 0.6rem 1.2rem !important;
+    font-size: 16px !important;
+}
+
+button[kind="primary"]:hover {
+    background-color: #1e40af !important;
+}
+
+footer {
+    visibility: hidden;
+}
 </style>
 """, unsafe_allow_html=True)
+
 
 # --------------------------------------------------
 # BRAND HEADER (KEEP TITLE)
