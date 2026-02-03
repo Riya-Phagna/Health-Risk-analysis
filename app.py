@@ -131,7 +131,7 @@ def assess_risk(age, bp, chol, bmi):
 # --------------------------------------------------
 # STEP-BY-STEP INPUTS (NON-TECHNICAL)
 # --------------------------------------------------
-st.markdown("### 🧾 Step 1: Enter Your Details")
+st.markdown("### 🧾  Enter Your Details")
 
 age = st.slider(
     "👤 Your Age",
@@ -152,9 +152,9 @@ chol = st.slider(
 )
 
 bmi = st.slider(
-    "⚖️ Body Weight (BMI)",
+    "⚖️ Body Mass Index (BMI)",
     15.0, 40.0, 23.0,
-    help="BMI is based on height & weight"
+    help="BMI is based on Height & weight"
 )
 
 st.divider()
