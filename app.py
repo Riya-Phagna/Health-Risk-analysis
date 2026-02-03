@@ -6,7 +6,7 @@ import pickle
 # PAGE CONFIG
 # --------------------------------------------------
 st.set_page_config(
-    page_title="HealNet – Health Risk Checker",
+    page_title="HealNet ",
     page_icon="🩺",
     layout="centered"
 )
@@ -60,9 +60,7 @@ st.caption("By **IoTrenetics Solutions Pvt. Ltd.**")
 
 st.markdown("---")
 
-st.markdown(
-    "💡 *Enter basic health details below to understand your health risk level.*"
-)
+
 
 # --------------------------------------------------
 # SAFE MODEL LOADING (OPTIONAL)
