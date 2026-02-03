@@ -3,63 +3,69 @@ import numpy as np
 import pickle
 
 # --------------------------------------------------
-# PAGE CONFIG
+# PAGE CONFIG (DO NOT CHANGE TITLE)
 # --------------------------------------------------
 st.set_page_config(
-    page_title="HealNet ",
+    page_title="HealNet",
     page_icon="🩺",
     layout="centered"
 )
 
 # --------------------------------------------------
-# SIMPLE UI STYLING
+# SIMPLE & CLEAN STYLING
 # --------------------------------------------------
 st.markdown("""
 <style>
-body {
-    background-color: #f6f8fc;
-}
 .main-card {
-    background-color: white;
-    padding: 25px;
-    border-radius: 14px;
-    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+    background-color: #ffffff;
+    padding: 28px;
+    border-radius: 16px;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.06);
 }
-.result-low {
+.step {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 15px;
+}
+.help-text {
+    color: #6b7280;
+    font-size: 14px;
+}
+.low-box {
     background: #eafaf1;
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 6px solid #2ecc71;
+    padding: 18px;
+    border-radius: 12px;
+    border-left: 6px solid #22c55e;
 }
-.result-mid {
-    background: #fff4e5;
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 6px solid #f39c12;
+.mid-box {
+    background: #fff7ed;
+    padding: 18px;
+    border-radius: 12px;
+    border-left: 6px solid #f59e0b;
 }
-.result-high {
+.high-box {
     background: #fdecea;
-    padding: 15px;
-    border-radius: 10px;
-    border-left: 6px solid #e74c3c;
+    padding: 18px;
+    border-radius: 12px;
+    border-left: 6px solid #ef4444;
 }
-footer {
-    visibility: hidden;
-}
+footer {visibility: hidden;}
 </style>
 """, unsafe_allow_html=True)
 
 # --------------------------------------------------
-# HEADER / BRANDING
+# BRAND HEADER (KEEP TITLE)
 # --------------------------------------------------
 st.markdown("<div class='main-card'>", unsafe_allow_html=True)
 
 st.markdown("## 🩺 **HealNet**")
 st.caption("By **IoTrenetics Solutions Pvt. Ltd.**")
 
-st.markdown("---")
+st.markdown(
+    "This tool helps you understand your **overall health risk** using basic health details."
+)
 
-
+st.divider()
 
 # --------------------------------------------------
 # SAFE MODEL LOADING (OPTIONAL)
@@ -116,83 +122,102 @@ def assess_risk(age, bp, chol, bmi):
             ml_prob = 0.0
 
     if score >= 7 or ml_prob >= 0.65:
-        return "High", score
+        return "High"
     elif score >= 4 or ml_prob >= 0.35:
-        return "Moderate", score
+        return "Moderate"
     else:
-        return "Low", score
+        return "Low"
 
 # --------------------------------------------------
-# USER INPUTS (VERY SIMPLE)
+# STEP-BY-STEP INPUTS (NON-TECHNICAL)
 # --------------------------------------------------
-st.markdown("### 🧾 Your Health Details")
+st.markdown("### 🧾 Step 1: Enter Your Details")
 
-age = st.slider("Age (in years)", 18, 80, 35)
-bp = st.slider("Blood Pressure (upper value)", 90, 200, 120)
-chol = st.slider("Cholesterol level", 120, 320, 180)
-bmi = st.slider("Body Weight Index (BMI)", 15.0, 40.0, 23.0)
+age = st.slider(
+    "👤 Your Age",
+    18, 80, 35,
+    help="Select your age in years"
+)
 
-st.markdown("---")
+bp = st.slider(
+    "❤️ Blood Pressure (upper number)",
+    90, 200, 120,
+    help="Example: 120 in 120/80"
+)
+
+chol = st.slider(
+    "🧪 Cholesterol Level",
+    120, 320, 180,
+    help="Normal is usually below 200"
+)
+
+bmi = st.slider(
+    "⚖️ Body Weight (BMI)",
+    15.0, 40.0, 23.0,
+    help="BMI is based on height & weight"
+)
+
+st.divider()
 
 # --------------------------------------------------
-# PREDICTION
+# RESULT BUTTON
 # --------------------------------------------------
 if st.button("🔍 Check My Health Risk"):
-    risk, score = assess_risk(age, bp, chol, bmi)
+    risk = assess_risk(age, bp, chol, bmi)
 
-    st.markdown("### 📊 Your Result")
+    st.markdown("### 📊 Your Health Result")
 
     if risk == "Low":
-        st.markdown(f"""
-        <div class="result-low">
-        <b>🟢 Low Health Risk</b><br>
-        Your current health indicators are within a safe range.
+        st.markdown("""
+        <div class="low-box">
+        <b>🟢 Low Health Risk</b><br><br>
+        Your health values are mostly within a safe range.
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
-**What you should do:**
-- Continue healthy eating habits  
-- Stay physically active  
-- Regular yearly health checkups  
+**What this means for you:**
+- Keep your current lifestyle
+- Eat healthy and stay active
+- Do regular yearly checkups
 
 📚 WHO & NIH Preventive Health Guidelines
 """)
 
     elif risk == "Moderate":
-        st.markdown(f"""
-        <div class="result-mid">
-        <b>🟡 Moderate Health Risk</b><br>
-        Some indicators need attention.
+        st.markdown("""
+        <div class="mid-box">
+        <b>🟡 Moderate Health Risk</b><br><br>
+        Some values need attention, but it can be improved.
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
-**What you should do:**
-- Reduce salt and fatty food  
-- Exercise at least 30 minutes daily  
-- Monitor BP & cholesterol regularly  
+**What this means for you:**
+- Reduce oily & salty food
+- Walk or exercise daily
+- Monitor BP and cholesterol
 
 📚 American Heart Association, NEJM
 """)
 
     else:
-        st.markdown(f"""
-        <div class="result-high">
-        <b>🔴 High Health Risk</b><br>
-        Medical consultation is recommended.
+        st.markdown("""
+        <div class="high-box">
+        <b>🔴 High Health Risk</b><br><br>
+        Medical attention is strongly recommended.
         </div>
         """, unsafe_allow_html=True)
 
         st.markdown("""
-**What you should do:**
-- Consult a doctor at the earliest  
-- Follow medical advice strictly  
-- Lifestyle and diet changes are critical  
+**What this means for you:**
+- Consult a doctor soon
+- Follow medical advice strictly
+- Lifestyle changes are important
 
 📚 ACC/AHA & The Lancet
 """)
 
-    st.info("⚠️ HealNet is an educational support tool and does not replace medical advice.")
+    st.info("⚠️ HealNet provides health guidance only. It is not a medical diagnosis.")
 
 st.markdown("</div>", unsafe_allow_html=True)
