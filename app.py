@@ -55,7 +55,6 @@ footer {
 st.markdown("<div class='main-card'>", unsafe_allow_html=True)
 
 st.markdown("## 🩺 **HealNet**")
-st.markdown("### Simple Health Risk Checker")
 st.caption("By **IoTrenetics Solutions Pvt. Ltd.**")
 
 st.markdown("---")
