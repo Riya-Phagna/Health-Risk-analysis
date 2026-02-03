@@ -3,17 +3,69 @@ import numpy as np
 import pickle
 
 # --------------------------------------------------
-# Page config
+# PAGE CONFIG
 # --------------------------------------------------
 st.set_page_config(
-    page_title="AI-powered Health Risk Prediction",
+    page_title="HealNet – Health Risk Checker",
+    page_icon="🩺",
     layout="centered"
 )
 
-st.title("🩺 AI-powered Health Risk Prediction using Machine Learning")
+# --------------------------------------------------
+# SIMPLE UI STYLING
+# --------------------------------------------------
+st.markdown("""
+<style>
+body {
+    background-color: #f6f8fc;
+}
+.main-card {
+    background-color: white;
+    padding: 25px;
+    border-radius: 14px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+}
+.result-low {
+    background: #eafaf1;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 6px solid #2ecc71;
+}
+.result-mid {
+    background: #fff4e5;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 6px solid #f39c12;
+}
+.result-high {
+    background: #fdecea;
+    padding: 15px;
+    border-radius: 10px;
+    border-left: 6px solid #e74c3c;
+}
+footer {
+    visibility: hidden;
+}
+</style>
+""", unsafe_allow_html=True)
 
 # --------------------------------------------------
-# Safe model loading (OPTIONAL – app works without it)
+# HEADER / BRANDING
+# --------------------------------------------------
+st.markdown("<div class='main-card'>", unsafe_allow_html=True)
+
+st.markdown("## 🩺 **HealNet**")
+st.markdown("### Simple Health Risk Checker")
+st.caption("By **IoTrenetics Solutions Pvt. Ltd.**")
+
+st.markdown("---")
+
+st.markdown(
+    "💡 *Enter basic health details below to understand your health risk level.*"
+)
+
+# --------------------------------------------------
+# SAFE MODEL LOADING (OPTIONAL)
 # --------------------------------------------------
 @st.cache_resource
 def load_model():
@@ -21,29 +73,21 @@ def load_model():
         with open("model.pkl", "rb") as f:
             return pickle.load(f)
     except Exception:
-        return None  # fallback to rule-based logic
+        return None
 
 model = load_model()
 
 # --------------------------------------------------
-# HYBRID RISK ASSESSMENT FUNCTION
+# HYBRID RISK LOGIC (UNCHANGED)
 # --------------------------------------------------
 def assess_risk(age, bp, chol, bmi):
-    """
-    Hybrid logic:
-    - Rule-based medical scoring (primary)
-    - ML probability (secondary, optional)
-    """
-
     score = 0
 
-    # ---- AGE ----
     if age >= 60:
         score += 2
     elif age >= 45:
         score += 1
 
-    # ---- BLOOD PRESSURE (Systolic) ----
     if bp >= 140:
         score += 3
     elif bp >= 130:
@@ -51,7 +95,6 @@ def assess_risk(age, bp, chol, bmi):
     elif bp >= 120:
         score += 1
 
-    # ---- CHOLESTEROL ----
     if chol >= 240:
         score += 3
     elif chol >= 200:
@@ -59,7 +102,6 @@ def assess_risk(age, bp, chol, bmi):
     elif chol >= 180:
         score += 1
 
-    # ---- BMI ----
     if bmi >= 30:
         score += 3
     elif bmi >= 25:
@@ -67,107 +109,93 @@ def assess_risk(age, bp, chol, bmi):
     elif bmi >= 23:
         score += 1
 
-    # --------------------------------------------------
-    # ML probability (if model exists)
-    # --------------------------------------------------
     ml_prob = 0.0
     if model is not None:
         try:
-            input_data = np.array([[age, bp, chol, bmi]])
-            ml_prob = model.predict_proba(input_data)[0][1]  # risk class
+            ml_prob = model.predict_proba(
+                np.array([[age, bp, chol, bmi]])
+            )[0][1]
         except Exception:
             ml_prob = 0.0
 
-    # --------------------------------------------------
-    # FINAL HYBRID DECISION
-    # --------------------------------------------------
     if score >= 7 or ml_prob >= 0.65:
-        risk_level = "HIGH"
-        color = "red"
+        return "High", score
     elif score >= 4 or ml_prob >= 0.35:
-        risk_level = "MODERATE"
-        color = "orange"
+        return "Moderate", score
     else:
-        risk_level = "LOW"
-        color = "green"
-
-    confidence = round(max(score / 10, ml_prob) * 100, 1)
-
-    return risk_level, confidence, color, score
+        return "Low", score
 
 # --------------------------------------------------
-# UI INPUTS
+# USER INPUTS (VERY SIMPLE)
 # --------------------------------------------------
-st.header("📋 Patient Health Details")
+st.markdown("### 🧾 Your Health Details")
 
-age = st.slider("Age (years)", 18, 80, 35)
-chol = st.slider("Cholesterol (mg/dL)", 120, 320, 180)
-bp = st.slider("Blood Pressure – Systolic (mmHg)", 90, 200, 120)
-bmi = st.slider("BMI", 15.0, 40.0, 23.0)
+age = st.slider("Age (in years)", 18, 80, 35)
+bp = st.slider("Blood Pressure (upper value)", 90, 200, 120)
+chol = st.slider("Cholesterol level", 120, 320, 180)
+bmi = st.slider("Body Weight Index (BMI)", 15.0, 40.0, 23.0)
+
+st.markdown("---")
 
 # --------------------------------------------------
-# PREDICTION BUTTON
+# PREDICTION
 # --------------------------------------------------
-if st.button("🔍 Predict Health Risk"):
-    risk, confidence, color, score = assess_risk(age, bp, chol, bmi)
+if st.button("🔍 Check My Health Risk"):
+    risk, score = assess_risk(age, bp, chol, bmi)
 
-    st.markdown(
-        f"""
-        ### 🧠 Risk Level: <span style="color:{color}">{risk}</span>
-        **Confidence:** {confidence}%  
-        **Risk Score:** {score}/10
-        """,
-        unsafe_allow_html=True
-    )
+    st.markdown("### 📊 Your Result")
 
-    st.divider()
-
-    # --------------------------------------------------
-    # RESEARCH-BASED SUGGESTIONS
-    # --------------------------------------------------
-    if risk == "LOW":
-        st.success("🟢 Low Health Risk")
+    if risk == "Low":
+        st.markdown(f"""
+        <div class="result-low">
+        <b>🟢 Low Health Risk</b><br>
+        Your current health indicators are within a safe range.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
-**Recommendations (Preventive Care):**
-- Maintain balanced diet (WHO dietary guidelines)
-- 150 minutes/week of moderate exercise (WHO, 2020)
-- Annual BP & cholesterol screening
-- Maintain BMI between 18.5–24.9
+**What you should do:**
+- Continue healthy eating habits  
+- Stay physically active  
+- Regular yearly health checkups  
 
-📚 *Sources:*  
-WHO Physical Activity Guidelines, 2020  
-NIH Preventive Health Reports
+📚 WHO & NIH Preventive Health Guidelines
 """)
 
-    elif risk == "MODERATE":
-        st.warning("🟡 Moderate Health Risk")
+    elif risk == "Moderate":
+        st.markdown(f"""
+        <div class="result-mid">
+        <b>🟡 Moderate Health Risk</b><br>
+        Some indicators need attention.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
-**Recommendations (Risk Reduction):**
-- DASH or Mediterranean diet (AHA, 2019)
-- Reduce sodium intake (<1500 mg/day)
-- Weight reduction of 5–7% if overweight
-- BP & lipid monitoring every 6 months
+**What you should do:**
+- Reduce salt and fatty food  
+- Exercise at least 30 minutes daily  
+- Monitor BP & cholesterol regularly  
 
-📚 *Sources:*  
-American Heart Association (AHA)  
-NEJM – Lifestyle Interventions & CVD Risk
+📚 American Heart Association, NEJM
 """)
 
     else:
-        st.error("🔴 High Health Risk")
+        st.markdown(f"""
+        <div class="result-high">
+        <b>🔴 High Health Risk</b><br>
+        Medical consultation is recommended.
+        </div>
+        """, unsafe_allow_html=True)
 
         st.markdown("""
-**Recommendations (Clinical Attention Required):**
-- Consult physician / cardiologist
-- Possible pharmacological intervention
-- Strict BP & lipid management
-- Supervised physical activity plan
+**What you should do:**
+- Consult a doctor at the earliest  
+- Follow medical advice strictly  
+- Lifestyle and diet changes are critical  
 
-📚 *Sources:*  
-ACC/AHA Hypertension Guidelines  
-The Lancet – Cardiovascular Risk Management
+📚 ACC/AHA & The Lancet
 """)
 
-    st.info("⚠️ This tool is for educational purposes only and not a medical diagnosis.")
+    st.info("⚠️ HealNet is an educational support tool and does not replace medical advice.")
+
+st.markdown("</div>", unsafe_allow_html=True)
