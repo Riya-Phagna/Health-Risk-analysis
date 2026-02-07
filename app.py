@@ -5,6 +5,8 @@ from datetime import datetime, timedelta
 import pandas as pd
 import json
 from pathlib import Path
+from openai import OpenAI
+
 
 # ================================================
 # PAGE CONFIGURATION
@@ -1237,6 +1239,7 @@ with tab3:
         
         # Export option
         st.markdown('<br>', unsafe_allow_html=True)
+        
         if st.button("📥 Export Health Data (CSV)", use_container_width=True):
             csv = history_df.to_csv(index=False)
             st.download_button(
@@ -1388,3 +1391,21 @@ st.markdown("""
     </p>
 </div>
 """, unsafe_allow_html=True)
+
+st.divider()
+st.header("🤖 HealNet AI Assistant")
+
+if "chat_history" not in st.session_state:
+    st.session_state.chat_history = []
+
+user_question = st.text_input("Ask a health-related question")
+
+if st.button("Ask AI"):
+    if user_question:
+        st.session_state.chat_history.append(("You", user_question))
+        st.session_state.chat_history.append(
+            ("AI", "AI is connected. Real responses will be enabled next.")
+        )
+
+for sender, message in st.session_state.chat_history:
+    st.markdown(f"**{sender}:** {message}")
